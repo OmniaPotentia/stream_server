@@ -1,11 +1,10 @@
 const {Router} = require('express');
-
 const UserService = require('../../services/UserService');
-const EmailService = require('../../services/EmailService');
-const SmsService = require('../../services/SmsService');
+//const EmailService = require('../../services/EmailService');
+//const SmsService = require('../../services/SmsService');
 
 const validation = require('../../middlewares/validation');
-const {HTTP_OK, HTTP_BAD_REQUEST} = require("../../ConstantVariables/HTTP_STATUS_CODES");
+const {HTTP_OK, HTTP_BAD_REQUEST, HTTP_CREATED} = require("../../ConstantVariables/HTTP_STATUS_CODES");
 
 const router = Router();
 
@@ -15,12 +14,14 @@ module.exports = () => {
         validation.validateUsername,
         validation.validateEmail,
         validation.validatePassword,
-        validation.validatePasswordMatch,
+        validation.validateFirstName,
+        validation.validateLastName,
         validation.validateMobileNumber,
         async (req, res, next) => {
             try {
                 const validationErrors = validation.validationResult(req);
                 const errors = [];
+
                 if (!validationErrors.isEmpty()) {
                     validationErrors.errors.forEach((error) => {
                         errors.push(error.param);
@@ -48,6 +49,8 @@ module.exports = () => {
 
                 const user = await UserService.createUser(
                     req.body.username,
+                    req.body.firstName,
+                    req.body.lastName,
                     req.body.email,
                     req.body.password,
                     req.body.mobileNumber
@@ -59,7 +62,7 @@ module.exports = () => {
                     await EmailService.sendEmail(user);
                 }*/
 
-                return res.status(HTTP_OK).json({user: user});
+                return res.status(HTTP_CREATED).json({user: user});
             } catch (err) {
                 return next(err);
             }

@@ -25,6 +25,16 @@ module.exports.validateUsername = body('username')
     .trim()
     .withMessage('The username has to be at least 6 characters long.');
 
+module.exports.validateFirstName = body('firstName')
+    .notEmpty()
+    .trim()
+    .withMessage("The first name can't be empty.");
+
+module.exports.validateLastName = body('lastName')
+    .notEmpty()
+    .trim()
+    .withMessage("The last name can't be empty.");
+
 module.exports.validateMobileNumber = body('mobileNumber').custom(
     (value) => {
         return validator.isMobilePhone(value);

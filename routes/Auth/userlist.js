@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const UserService = require('../../services/UserService');
-const {HTTP_OK} = require("../../ConstantVariables/HTTP_STATUS_CODES");
+const {HTTP_OK, HTTP_NOT_FOUND} = require("../../ConstantVariables/HTTP_STATUS_CODES");
 
 const router = Router();
 
@@ -24,13 +24,13 @@ module.exports = () => {
                     {userList: userList}
                 );
             } else {
-                return res.status(HTTP_OK).send('No user found')
+                return res.status(HTTP_NOT_FOUND).send('No user found')
             }
         } catch (err) {
             return next(err);
         }
     });
-    router.get('/userlist/?userID=', async (req, res, next) => {
+    router.get('/userlist/:userID', async (req, res, next) => {
         try {
             const user = await UserService.findById(req.params.userID);
             if (user) {

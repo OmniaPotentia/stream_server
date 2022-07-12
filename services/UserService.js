@@ -14,8 +14,10 @@ class UserService {
         return UserModel.findOne({username}).exec();
     }
 
-    static async createUser(username, email, password, phoneNumber) {
+    static async createUser(username, firstName, lastName, email, password, phoneNumber) {
         const user = new UserModel();
+        user.firstName = firstName;
+        user.lastName = lastName;
         user.email = email;
         user.password = password;
         user.username = username;

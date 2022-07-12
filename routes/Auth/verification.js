@@ -5,7 +5,7 @@ const {HTTP_OK, HTTP_NOT_FOUND} = require("../../ConstantVariables/HTTP_STATUS_C
 const router = Router();
 
 module.exports = () => {
-    router.get('/verify/:userId/:token', async (req, res, next) => {
+    router.post('/verify/:userId/:token', async (req, res, next) => {
         try {
             const user = await UserService.findById(req.params.userId);
             if (!user || user.verificationToken !== req.params.token) {

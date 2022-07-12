@@ -15,15 +15,11 @@ const userSchema = mongoose.Schema(
             type: String,
             required: true,
             trim: true,
-            index: {unique: true},
-            minlength: 6,
         },
         lastName: {
             type: String,
             required: true,
             trim: true,
-            index: {unique: true},
-            minlength: 6,
         },
         email: {
             type: String,
