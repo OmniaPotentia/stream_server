@@ -14,20 +14,24 @@ module.exports = () => {
         }),
         async (req, res, next) => {
             try {
-                if (req.body.remember) {
-                    req.sessionOptions.maxAge = 24 * 60 * 60 * 1000 * 14;
-                    req.session.rememberme = req.sessionOptions.maxAge;
+                const hour = 720000000;
+                if (req.body.session_time) {
+                    req.session.cookie.expires = new Date(Date.now() + hour).toLocaleDateString();
+                    req.session.cookie.maxAge = hour
                 } else {
-                    req.session.rememberme = null;
+                    req.session.cookie.maxAge = null;
+                    req.body.session_time=null
                 }
                 const dbUser = await UserService.findByUsername(req.user.username);
                 res.status(HTTP_OK).json({
                     user: {
                         username: dbUser.username,
+                        firstName: dbUser.firstName,
+                        lastName: dbUser.lastName,
                         _id: dbUser._id,
                         email: dbUser.email,
                         mobileNumber: dbUser.mobileNumber
-                    }, session: req.session.rememberme
+                    }, session_time: req.session.cookie.maxAge, expires: req.session.cookie.expires
                 });
             } catch (err) {
                 return next(err);
@@ -35,10 +39,16 @@ module.exports = () => {
         }
     );
 
-    router.get('/logout', (req, res) => {
-        req.logout();
-        req.session.rememberme = null;
-        return res.status(HTTP_OK).send('Successfully logged out');
+    router.get('/logout', (req, res,next) => {
+        req.logout(function (err) {
+            if (err) {
+                return next(err);
+            }
+            req.session.cookie.maxAge = null;
+            req.body.session_time=null
+            return res.status(HTTP_OK).send('Successfully logged out');
+        });
+
     });
 
     return router;

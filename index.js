@@ -1,7 +1,7 @@
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const bodyparser = require("body-parser");
-const session = require('cookie-session');
+const session = require('express-session');
 
 const indexRouter = require('./routes/index');
 const setupPassport = require('./lib/passport/passport');
@@ -24,9 +24,14 @@ module.exports = (config) => {
                 'production',
             ],
             resave: false,
+            secret: process.env.EXPRESS_SECRET,
             saveUninitialized: true,
             sameSite: 'lax',
-            maxAge: null,
+            cookie: {
+                maxAge: null,
+                expires: null
+            },
+
         })
     );
 
@@ -37,8 +42,8 @@ module.exports = (config) => {
     app.use(passport.session());
 
     app.use(async (req, res, next) => {
-        req.sessionOptions.maxAge =
-            req.session.rememberme || req.sessionOptions.maxAge;
+        req.session.cookie.maxAge =
+            req.session.rememberme || req.session.cookie.maxAge;
         res.locals.user = req.user;
         return next();
     });
