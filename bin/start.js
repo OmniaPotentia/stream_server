@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const config = require('../config/config');
 
 const {logger} = config;
+//const {Server} = require("socket.io");
 
 const app = require('../index.js')(config);
 
@@ -25,6 +26,12 @@ const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 const server = http.createServer(app);
+/*const io = new Server(server, {
+    cors: {
+        origin: "*",
+        credentials: true
+    }
+});*/
 
 mongoose.connect(config.database.dsn
     , (error) => {

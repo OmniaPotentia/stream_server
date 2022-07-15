@@ -50,6 +50,10 @@ const userSchema = mongoose.Schema(
             unique: true,
             default: () => Math.floor(100000 + Math.random() * 900000),
         },
+        activeStatus: {
+          type: Boolean,
+          default:true,
+        },
         oauthprofiles: [
             {
                 provider: {type: String},

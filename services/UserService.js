@@ -23,7 +23,10 @@ class UserService {
         user.username = username;
         user.mobileNumber = phoneNumber;
         return await user.save();
+    }
 
+    static async changeStatus(username, userStatus) {
+        await UserModel.findOneAndUpdate({'username': username}, {'$set': {activeStatus: userStatus}}, {upsert: true});
     }
 
     static async createGoogleUser(username, email, oauthProfile) {
