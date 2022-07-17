@@ -2,6 +2,7 @@ const {Router} = require('express');
 const passport = require('passport');
 const UserService = require('../../services/UserService');
 const {HTTP_OK} = require("../../ConstantVariables/HTTP_STATUS_CODES");
+const {ensureAuthenticated} = require("../../middlewares/isLoginCheck");
 const router = Router();
 
 module.exports = () => {
@@ -51,16 +52,15 @@ module.exports = () => {
         });
     });
 
-    router.post('/connect', async (req, res, next) => {
-        await UserService.changeStatus(req.body.username, true)
+    router.get('/connect', ensureAuthenticated, async (req, res, next) => {
+        await UserService.changeStatus(req.user.username, true)
         return res.status(HTTP_OK).send('Status Successfully Changed');
     });
 
-    router.post('/disconnect', async (req, res, next) => {
-        await UserService.changeStatus(req.body.username, false)
+    router.get('/disconnect', ensureAuthenticated, async (req, res, next) => {
+        await UserService.changeStatus(req.user.username, false)
         return res.status(HTTP_OK).send('Status Successfully Changed');
     });
-
 
 
     return router;

@@ -13,11 +13,6 @@ module.exports = () => {
                     'Invalid credentials provided!');
             } else {
                 user.verified = true;
-                user.update({}, {
-                    $unset: {
-                        verificationToken: 1
-                    }
-                })
                 await user.save();
                 return res.status(HTTP_OK).send(
                     'You have been verified!');
