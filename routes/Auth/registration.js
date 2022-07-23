@@ -11,7 +11,6 @@ const router = Router();
 module.exports = () => {
     router.post(
         '/register',
-        validation.validateUsername,
         validation.validateEmail,
         validation.validatePassword,
         validation.validateFirstName,
@@ -31,13 +30,10 @@ module.exports = () => {
                     });
                 } else {
                     const existingEmail = await UserService.findByEmail(req.body.email);
-                    const existingUsername = await UserService.findByUsername(
-                        req.body.username
-                    );
 
-                    if (existingEmail || existingUsername) {
-                        res.send(
-                            'The given email address or the username exist already!'
+                    if (existingEmail) {
+                        res.status(HTTP_BAD_REQUEST).send(
+                            'The given email address exist already!'
                         );
                     }
                 }
@@ -48,7 +44,6 @@ module.exports = () => {
                 }
 
                 const user = await UserService.createUser(
-                    req.body.username,
                     req.body.firstName,
                     req.body.lastName,
                     req.body.email,

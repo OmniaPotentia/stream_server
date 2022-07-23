@@ -21,8 +21,15 @@ module.exports = () => {
                     req.session.cookie.maxAge = null;
                     req.body.session_time = null
                 }
-                await UserService.changeStatus(req.user.username, true)
-                const dbUser = await UserService.findByUsername(req.user.username);
+                console.log('test')
+                req.user.username ? await UserService.changeStatus(req.user.username, true,false,false)
+                    :  req.user.email ? await UserService.changeStatus(req.user.email, true,true,false)
+                    : await UserService.changeStatus(req.user.mobileNumber, true,false,true)
+
+                const dbUser = req.user.username ? await UserService.findByUsername(req.user.username)
+                    :  req.user.email ? await UserService.findByEmail(req.user.email)
+                        : await UserService.findByMobileNumber(req.user.mobileNumber)
+                console.log(dbUser)
                 res.status(HTTP_OK).json({
                     user: {
                         username: dbUser.username,
